@@ -1,0 +1,94 @@
+<svg width="1600" height="1600" viewBox="0 0 1600 1600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1600" fill="#F6F7F9"/>
+  <text x="80" y="86" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800">Bookly Support Agent Architecture</text>
+  <text x="82" y="126" fill="#55606D" font-family="Inter, Arial, sans-serif" font-size="24">Support workflow demo by Yael Descalo</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L12 7 L2 12 Z" fill="#0F766E"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#1F2937" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="200" width="270" height="130" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="112" y="250" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Customer</text>
+    <text x="112" y="287" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Chat UI</text>
+    <text x="112" y="318" fill="#55606D" font-family="Inter, Arial, sans-serif" font-size="17">React + TypeScript web chat</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="455" y="180" width="315" height="170" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="487" y="230" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Agent Brain</text>
+    <text x="487" y="267" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Agent Orchestrator</text>
+    <text x="487" y="300" fill="#55606D" font-family="Inter, Arial, sans-serif" font-size="17">Intent routing, state, decisions</text>
+    <text x="487" y="326" fill="#55606D" font-family="Inter, Arial, sans-serif" font-size="17">answer • clarify • act • escalate</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="880" y="110" width="280" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="912" y="157" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">AOP</text>
+    <text x="912" y="194" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">Order Status</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="880" y="285" width="280" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="912" y="332" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">AOP</text>
+    <text x="912" y="369" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">Returns</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="880" y="460" width="280" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="912" y="507" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">AOP</text>
+    <text x="912" y="544" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">Case Lookup</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1260" y="110" width="260" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="1292" y="156" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Tool</text>
+    <text x="1292" y="192" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Order Data</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1260" y="285" width="260" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="1292" y="331" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Tool</text>
+    <text x="1292" y="367" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Return Policy</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1260" y="460" width="260" height="115" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="1292" y="506" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Tool</text>
+    <text x="1292" y="542" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Support Cases</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="455" y="490" width="315" height="150" rx="12" fill="#12343B" stroke="#12343B" stroke-width="2"/>
+    <text x="487" y="540" fill="#8EE4D7" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Guardrails</text>
+    <text x="487" y="577" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">Verification + Safety</text>
+    <text x="487" y="610" fill="#D7E5E8" font-family="Inter, Arial, sans-serif" font-size="17">OTP, policy checks, escalation</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="80" y="520" width="270" height="120" rx="12" fill="#FFFFFF" stroke="#D8E2EA" stroke-width="2"/>
+    <text x="112" y="567" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800">Memory</text>
+    <text x="112" y="604" fill="#1B1F24" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">Session State</text>
+    <text x="112" y="632" fill="#55606D" font-family="Inter, Arial, sans-serif" font-size="17">intent, email, OTP, active return</text>
+  </g>
+
+  <path d="M350 265 H440" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M770 265 C815 265 820 168 865 168" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M770 265 H865" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M770 300 C815 300 820 518 865 518" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1160 168 H1245" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1160 343 H1245" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1160 518 H1245" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M612 350 V475" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M350 580 H440" stroke="#0F766E" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="80" y="735" width="1440" height="135" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="2"/>
+  <text x="112" y="780" fill="#7C2D12" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">Production extension points</text>
+  <text x="112" y="815" fill="#7C2D12" font-family="Inter, Arial, sans-serif" font-size="20">API Gateway / WAF • Real order, returns, CRM, and shipping integrations • Conversation storage</text>
+  <text x="112" y="847" fill="#7C2D12" font-family="Inter, Arial, sans-serif" font-size="20">QA, monitoring, multilingual support, and human handoff</text>
+</svg>
