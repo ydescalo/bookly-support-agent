@@ -172,15 +172,15 @@ function handleOrderStatus(memory: Memory): AgentResult {
 
     const summaries = lookup.orders
       .map((order) => {
-        if (order.status === "shipped") return `${order.id} "${order.title}" has shipped with ${order.carrier}.`;
-        if (order.status === "delivered") return `${order.id} "${order.title}" was delivered ${order.deliveredDaysAgo} days ago.`;
-        if (order.status === "arriving_soon") return `${order.id} "${order.title}" should arrive within ${order.arrivalEstimate}.`;
-        return `${order.id} "${order.title}" is still processing.`;
+        if (order.status === "shipped") return `${order.id} book title ("${order.title}") has shipped with ${order.carrier}.`;
+        if (order.status === "delivered") return `${order.id} book title ("${order.title}") was delivered ${order.deliveredDaysAgo} days ago.`;
+        if (order.status === "arriving_soon") return `${order.id} book title ("${order.title}") should arrive within ${order.arrivalEstimate}.`;
+        return `${order.id} book title ("${order.title}") is still processing.`;
       })
-      .join(" ");
+      .join("\n");
 
     return {
-      text: `Here are the orders I found for ${memory.email}: ${summaries}`,
+      text: `Here are the orders I found for ${memory.email}:\n${summaries}`,
       memory: { ...memory, orderId: undefined },
       toolCalls,
     };
@@ -219,12 +219,12 @@ function handleOrderStatus(memory: Memory): AgentResult {
   const order = lookup.order;
   const status =
     order.status === "shipped"
-      ? `Your order ${order.id} for "${order.title}" has shipped with ${order.carrier}. Tracking number: ${order.trackingNumber}. Track it here: https://www.ups.com/track?tracknum=${order.trackingNumber}.`
+      ? `Your order ${order.id} for book title ("${order.title}") has shipped with ${order.carrier}. Tracking number: ${order.trackingNumber}. Track it here: https://www.ups.com/track?tracknum=${order.trackingNumber}.`
       : order.status === "delivered"
-        ? `Your order ${order.id} for "${order.title}" was delivered ${order.deliveredDaysAgo} days ago.`
+        ? `Your order ${order.id} for book title ("${order.title}") was delivered ${order.deliveredDaysAgo} days ago.`
         : order.status === "arriving_soon"
-          ? `Your order ${order.id} for "${order.title}" should arrive within ${order.arrivalEstimate}.`
-          : `Your order ${order.id} for "${order.title}" is still processing.`;
+          ? `Your order ${order.id} for book title ("${order.title}") should arrive within ${order.arrivalEstimate}.`
+          : `Your order ${order.id} for book title ("${order.title}") is still processing.`;
 
   return {
     text: `${status} Is there anything else you need help with?`,
@@ -244,8 +244,6 @@ function handleReturn(memory: Memory): AgentResult {
   }
 
   const returnMemory = { ...memory, orderId: memory.returnOrderId };
-  const missing = missingIdentity(returnMemory);
-  if (missing) return { text: missing, memory: returnMemory, toolCalls };
   if (!memory.returnReason) {
     return {
       text: "Please share the reason for the return, such as damaged item, wrong book, duplicate order, or changed my mind.",
@@ -253,6 +251,8 @@ function handleReturn(memory: Memory): AgentResult {
       toolCalls,
     };
   }
+  const missing = missingIdentity(returnMemory);
+  if (missing) return { text: missing, memory: returnMemory, toolCalls };
 
   const verification = requireVerification(returnMemory, toolCalls);
   if (verification) return verification;
@@ -290,7 +290,7 @@ function handleReturn(memory: Memory): AgentResult {
     const created = createReturn(lookup.order.id, memory.returnReason);
     toolCalls.push(created.call);
     return {
-      text: `You're eligible for a return. I created return ${created.returnId} for "${lookup.order.title}". You'll receive return instructions by email at ${lookup.order.email}.`,
+      text: `You're eligible for a return. I created return ${created.returnId} for book title ("${lookup.order.title}"). You'll receive return instructions by email at ${lookup.order.email}.`,
       memory: returnMemory,
       toolCalls,
     };

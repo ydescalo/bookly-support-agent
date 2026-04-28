@@ -1,6 +1,6 @@
 import type { Order, ReturnCase, SupportCase } from "./types";
 
-export const verificationCodes = ["123456", "010101"];
+export const verificationCodes = ["123456", "121212"];
 
 export const orders: Order[] = [
   {

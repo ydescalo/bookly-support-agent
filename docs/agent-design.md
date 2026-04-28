@@ -2,28 +2,84 @@
 
 ## Architecture Overview
 
-The prototype is a web chat for Bookly support focused on order status, returns, support case tracking, and return case tracking. The flow is:
+Bookly Support Agent is a web chat for order status, returns, support case tracking, and return case tracking. It now supports two execution modes:
 
-`Chat UI -> Agent Orchestrator -> Intent Router / AOP -> Memory -> Mock Tools -> Grounded Response`
+`Workflow mode: Chat UI -> Deterministic Agent Orchestrator -> Memory -> Mock Tools -> Customer Response`
 
-The agent uses lightweight Agent Operating Procedure-style logic: identify the customer's intent, collect required fields, verify identity, call the right tool, and respond only from tool or policy results. I chose this structure because Decagon's value proposition is not just generating support text; it is safely orchestrating support workflows across business rules and systems.
+`AI agent mode: Chat UI -> /api/agent Backend Route -> OpenAI Responses API -> Backend Tool Execution -> Customer Response`
+
+The browser never calls OpenAI directly. In AI agent mode, the UI posts the customer message, current workflow memory, recent chat history, selected model, and an optional user-provided OpenAI API key to `/api/agent`. Locally, Vite mounts this route through `server/agentHandler.ts`. On Vercel, `api/agent.ts` serves the same route as a Vercel Function and reuses the same shared backend logic. The backend uses the provided key for that request, or falls back to `OPENAI_API_KEY` from its environment when configured. It then calls the OpenAI Responses API, executes mocked Bookly tools on behalf of the model, and returns a final response.
+
+For hosted evaluation, the API key entered in the UI is held only in the browser's current React state. It is not saved to local storage. It is sent over HTTPS to the backend only with AI-mode requests, used for that request, and not persisted by the app.
+
+## Mode Behavior
+
+`Workflow` is the default mode. It uses deterministic TypeScript logic to detect intent, collect missing fields, verify the customer, call mocked Bookly tools, and return predictable responses. It is best for repeatable demos, testable workflow behavior, and showing explicit support-policy orchestration.
+
+`AI agent` uses a model for natural-language reasoning and follow-up handling, but keeps business actions behind backend tool calls. Recent chat history is sent to the backend so short follow-ups like an email address, `changed my mind`, or `return` remain connected to the active order and intent. The backend also enriches memory from the latest message before calling the model.
 
 ## Conversation and Decision Design
 
-The agent supports order status and returns deeply rather than covering many shallow intents. For order-specific requests, it requires order ID and email, sends a mocked one-time code, and only exposes order details after verification. If information is missing, it asks a targeted follow-up instead of guessing. For returns, it collects a reason, looks up the order, checks the policy, and either creates a return or escalates to a human. It can also look up support cases and return cases with grounded status information.
+For order-specific requests, the agent requires order ID and email, sends a mocked one-time code, and only exposes order details after verification. Mock verification codes are `123456` and `121212`.
 
-This design makes the agent predictable and explainable. The customer sees fast progress, while the system keeps clear boundaries around identity, policy, and tool execution.
+For returns, the agent must collect a return reason before checking eligibility or creating a return. If the user says `I want to return BK-1002`, the backend preserves `BK-1002` in memory and asks for the reason. A follow-up like `changed my mind` stays attached to that order. After the reason is collected, the agent verifies the customer, looks up the order, checks the return policy, and either creates a return or escalates to a support case.
 
-## Example System Prompt
+For high-value returns, such as `BK-9001`, the response must clearly explain that escalation is due to the order amount being above Bookly's high-value threshold. Out-of-window returns and high-value returns are escalated instead of approved automatically.
 
-You are Bookly's customer support agent. Help customers with order status, return requests, support cases, and return case status. Be concise and friendly. Do not reveal order-specific information until the customer has provided order ID, email, and a valid verification code. Use tools for order lookups, return eligibility, return creation, case lookup, and escalations. Never invent order details, refund approvals, tracking numbers, case statuses, or policy exceptions. If required information is missing, ask one focused follow-up question. If the request is ambiguous, high-risk, outside policy, or cannot be verified, escalate with a clear summary for a human agent.
+Support case and return case status lookups can be answered from mocked case tools without order verification.
 
-## Safety and Guardrails
+## Current AI Instructions
 
-The prototype blocks account-specific actions until verification succeeds. The agent only answers from mock order data and mock return policy results. It escalates invalid orders, high-value return requests, and out-of-window returns rather than inventing exceptions. Tool traces are visible in the UI to make the agent's decisions auditable during the demo.
+The AI agent currently receives these instructions:
+
+- You are Bookly's customer support agent for a fictional online bookstore.
+- Help customers with order status, return requests, support cases, and return case status.
+- Be concise and ask one focused follow-up question when required information is missing.
+- Do not repeat a sentence or paragraph in the same response.
+- When listing multiple orders, cases, steps, or facts, put each item on its own line.
+- When a response has an intro sentence plus multiple item sentences, put a line break after the intro sentence.
+- When mentioning a book, format it as `book title ("Title")`.
+- Never invent order details, refund approvals, tracking numbers, case statuses, or policy exceptions.
+- Do not provide order status, order lists, tracking numbers, return eligibility, or return creation from memory or guesses. Use a tool result for that data.
+- If a return is escalated because it is high-value, clearly say it is because the order amount is above Bookly's high-value threshold.
+- Order-specific information is protected: collect order ID and email, send a verification code, and require a valid six-digit verification code before looking up orders, listing orders, creating returns, or sending return instructions.
+- Support case and return case status lookups are allowed without order verification.
+- Use tools whenever answering from Bookly data or taking an action.
+
+## Guardrails
+
+The backend enforces additional guardrails outside the model:
+
+- The browser never calls OpenAI directly; OpenAI requests are made from the backend route.
+- User-provided API keys are session-only in the browser and request-scoped on the backend. A backend `OPENAI_API_KEY` can be used as a fallback for local or managed deployments.
+- Order-specific tools are blocked until verification succeeds.
+- Return requests with an order ID but no return reason are intercepted before a model call and ask for the reason.
+- Memory is enriched from user input so order ID, email, return intent, return reason, and all-orders intent persist across short follow-ups.
+- If the customer changes to a different return order, stale return reason state is cleared.
+- Exact duplicate sentences are removed from model responses before they reach the chat UI.
+- Multi-order responses are post-processed so each `BK-####` item appears on its own line.
+- Tool traces are visible only in the right-side Tool trace panel. Customer chat bubbles do not show debug/tool-call blocks.
+- The agent only answers order and return facts from mock tool results, not from model guesses.
+
+## Mock Tools
+
+The same mocked Bookly tools back both modes:
+
+- `sendVerificationCode`
+- `verifyCode`
+- `lookupOrder`
+- `lookupOrdersByEmail`
+- `checkReturnEligibility`
+- `createReturn`
+- `createEscalation`
+- `sendReturnInstructions`
+- `lookupSupportCase`
+- `lookupReturnCase`
 
 ## Production Readiness
 
-To move quickly, I mocked customer data, tools, authentication, policy storage, observability, and handoff systems. In production, I would add verified customer authentication such as a one-time code sent to the email address on the order, real order/returns/shipping/CRM/helpdesk integrations, an API gateway and WAF for auth enforcement, rate limiting, abuse protection, and request validation, and persisted session transcripts, tool calls, outcomes, and summaries for historical memory.
+The backend route is intentionally lightweight. For local development, it runs through Vite middleware. For hosted deployment, `api/agent.ts` runs as a Vercel Function. In production, I would keep `OPENAI_API_KEY` in managed secrets, add rate limiting and request validation, and connect tools to real order, returns, shipping, CRM, helpdesk, and authentication systems.
 
-I would also add multilingual detection and response, lifecycle rules for resolved, escalated, and abandoned chats, end-of-chat summaries, quick CSAT or thumbs-up feedback, and human handoff for failed authentication, angry sentiment, high-value refunds, VIP customers, policy exceptions, or repeated failed attempts. Operationally, I would add QA and observability for resolution rate, escalation rate, abandonment rate, CSAT, latency, tool failures, and hallucination or grounding issues, plus an evaluation suite for invalid orders, missing information, ineligible returns, prompt injection, unsupported languages, duplicate returns, and unclear intent.
+I would also save chat history, tool calls, outcomes, and summaries so support teams can review past conversations. I would add simple status handling for resolved, escalated, and abandoned chats; support multilingual detection and response; and add human handoff for failed authentication, angry sentiment, high-value refunds, VIP customers, policy exceptions, or repeated failed attempts.
+
+Operationally, I would add QA and observability for resolution rate, escalation rate, abandonment rate, CSAT, latency, tool failures, and hallucination or grounding issues.

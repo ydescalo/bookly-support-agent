@@ -76,7 +76,7 @@ export function checkReturnEligibility(order: Order, reason: string) {
     return {
       eligible: false,
       escalates: true,
-      reason: "High-value orders require a support specialist review before a return is approved.",
+      reason: `This order total is $${order.total.toFixed(2)}, which is above Bookly's $${returnPolicy.highValueEscalationThreshold.toFixed(2)} high-value threshold. High-value returns require support specialist review before approval.`,
       call: toolCall("checkReturnEligibility", `${order.id}, ${reason}`, "Escalate: high-value order"),
     };
   }

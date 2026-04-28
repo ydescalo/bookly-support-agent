@@ -80,9 +80,58 @@ button {
 
 .chat-card {
   display: grid;
-  grid-template-rows: 56px minmax(308px, 41vh) 88px;
+  grid-template-rows: 42px 56px minmax(308px, 41vh) 88px auto;
   min-height: 480px;
   overflow: hidden;
+}
+
+.mode-bar {
+  align-items: center;
+  border-bottom: 1px solid #e8ecf1;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto minmax(120px, 180px) minmax(180px, 1fr);
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.segmented-control {
+  background: #eef2f6;
+  border: 1px solid #d6dde5;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 32px;
+  overflow: hidden;
+  width: 200px;
+}
+
+.segmented-control button {
+  background: transparent;
+  border: 0;
+  color: #394552;
+  font-size: 0.82rem;
+  font-weight: 800;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.segmented-control button.active {
+  background: #12343b;
+  color: #ffffff;
+}
+
+.mode-bar input {
+  border: 1px solid #cfd7df;
+  border-radius: 8px;
+  height: 32px;
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.mode-bar input:disabled {
+  background: #f2f5f8;
+  color: #7a8591;
 }
 
 .prompt-row {
@@ -90,7 +139,7 @@ button {
   border-bottom: 1px solid #e8ecf1;
   display: flex;
   gap: 6px;
-  height: 56px;
+  min-height: 72px;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 8px 10px;
@@ -104,13 +153,25 @@ button {
   flex: 0 0 auto;
   font-size: 0.78rem;
   font-weight: 700;
-  height: 38px;
+  height: 54px;
   line-height: 1.1;
-  max-width: 260px;
+  max-width: 320px;
   overflow: hidden;
-  padding: 0 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 0 14px;
+  white-space: normal;
+  width: max-content;
+}
+
+.prompt-row button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
 .secondary-button {
@@ -157,6 +218,7 @@ button {
 
 .message p {
   margin: 4px 0 0;
+  white-space: pre-line;
 }
 
 .message-meta {
@@ -228,6 +290,17 @@ button {
   height: 60px;
   min-width: 76px;
   padding: 0 16px;
+}
+
+.error-banner {
+  background: #fff1f2;
+  border-top: 1px solid #fecdd3;
+  color: #9f1239;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0;
+  padding: 11px 14px;
 }
 
 .case-list {
@@ -341,6 +414,14 @@ button {
 
   .chat-card {
     min-height: 620px;
+  }
+
+  .mode-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .segmented-control {
+    width: 100%;
   }
 
   .message {
