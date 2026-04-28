@@ -24,10 +24,17 @@ export async function respondWithOpenAI(
     }),
   });
 
-  const payload = await response.json();
+  const responseText = await response.text();
+  let payload: AgentResult | { error?: string } | null = null;
+  try {
+    payload = responseText ? JSON.parse(responseText) : null;
+  } catch {
+    throw new Error(responseText || `Agent request failed with status ${response.status}.`);
+  }
 
   if (!response.ok) {
-    throw new Error(payload?.error ?? `Agent request failed with status ${response.status}.`);
+    const errorMessage = payload && "error" in payload ? payload.error : undefined;
+    throw new Error(errorMessage ?? `Agent request failed with status ${response.status}.`);
   }
 
   return payload as AgentResult;
