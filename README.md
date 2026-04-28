@@ -4,6 +4,8 @@ Bookly Support Agent is a customer support AI agent demo for Bookly, a fictional
 
 Hosted app: https://bookly-support-agent-gamma.vercel.app/
 
+GitHub repository: https://github.com/ydescalo/bookly-support-agent
+
 The demo focuses on the following flows:
 
 - Order status workflow
