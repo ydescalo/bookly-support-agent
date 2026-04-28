@@ -34,7 +34,10 @@ export async function respondWithOpenAI(
 
   if (!response.ok) {
     const errorMessage = payload && "error" in payload ? payload.error : undefined;
-    throw new Error(errorMessage ?? `Agent request failed with status ${response.status}.`);
+    const requestId = payload && "requestId" in payload ? payload.requestId : undefined;
+    throw new Error(
+      `${errorMessage ?? `Agent request failed with status ${response.status}.`}${requestId ? ` Request ID: ${requestId}` : ""}`,
+    );
   }
 
   return payload as AgentResult;
